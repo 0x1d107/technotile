@@ -1,6 +1,7 @@
 #include "UI.hpp"
 #include "UIImage.hpp"
 #include "UIGrid.hpp"
+#include "UIText.hpp"
 #include "World.hpp"
 #include "Tile.hpp"
 #include <iostream>
@@ -21,6 +22,8 @@ int main(){
     world.setTile(15,16,rover);
     UIGrid* grid = new UIGrid(world);
     ui.addComponent(grid);
+    UIText *text = new UIText("ttf/pixel.ttf",0,0,"Tech demo 0.0.1",{0xff,0x00,0x00,0});
+    ui.addComponent(text);
     //ui.addComponent(kotik);
     ui.runEventLoop();
     std::cout << SDL_GetError();

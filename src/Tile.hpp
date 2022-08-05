@@ -8,7 +8,7 @@
 #include "World.hpp"
 
 class Tile{
-    
+    protected:
     std::string texture_path; 
     SDL_Surface * surface =NULL;
     SDL_Texture * texture= NULL;

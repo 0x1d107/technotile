@@ -1,6 +1,7 @@
 #include "UI.hpp"
 #include <exception>
 #include <stdexcept>
+#include <SDL2/SDL_ttf.h>
 
 UI::UI(){
     if(SDL_Init(SDL_INIT_EVERYTHING))
