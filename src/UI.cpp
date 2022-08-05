@@ -34,7 +34,9 @@ void UI::render(){
     SDL_RenderPresent(renderer);
 }
 void UI::runEventLoop(){
+    const Uint32 cap = 34;// milliseconds
     while(1){
+        Uint64 start = SDL_GetPerformanceCounter();
         SDL_Event event;
         while(SDL_PollEvent(&event)){
             if(event.type == SDL_QUIT){
@@ -43,6 +45,9 @@ void UI::runEventLoop(){
             event_manager.handleEvent(event);
         }
         render();
+        Uint64 end = SDL_GetPerformanceCounter();
+        Uint64 t = 1000*(end-start)/SDL_GetPerformanceFrequency();
+        if(cap>t)SDL_Delay(cap-t);
     }
 }
 UI::~UI(){
