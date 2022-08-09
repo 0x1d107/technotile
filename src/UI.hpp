@@ -31,6 +31,7 @@ class UI{
     SDL_Renderer *renderer=NULL;
     std::deque<const UIComponent *> components;
     EventManager event_manager;
+    SDL_TimerID updateTimerId=-1;
     public:
     UI();
     void getWindowSize(int& width,int& height);

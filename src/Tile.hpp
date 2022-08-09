@@ -10,8 +10,9 @@
 class Tile{
     protected:
     std::string texture_path; 
-    SDL_Surface * surface =NULL;
     SDL_Texture * texture= NULL;
+    int width;
+    int height;
     public:
     Tile(const std::string& texture_path);
     Tile(const Tile& tile);

@@ -33,7 +33,23 @@ void World::load(std::string filename){
     for(auto t:world_json["data"].array_items()){
         grid_data.push_back(t);
     }
+    for(auto e :entities){
+        delete e;
+    }
+    entities.clear();
+    for(auto j:world_json["entities"].array_items()){
+        entities.push_back(EntityFactory::deserializeJson(j));
+    }
     world_file.close();
+}
+void World::update(){
+    std::vector<json11::Json> new_data(grid_data.size());
+    for(int x=0;x<width;x++)
+        for(int y=0;y<height;y++){
+            Tile *tile = tiles[grid[y*width+x]];
+            new_data[y*width+x] = tile->updateData(*this,x,y);
+        }
+    grid_data = new_data;
 }
 
 const std::vector<Tile*> & World::getTiles() const{
@@ -43,6 +59,9 @@ World::~World(){
    for(auto tile:tiles){
     delete tile;
    } 
+   for(auto e:entities){
+    delete e;
+   }
 }
 const Tile * World::getTile(int x,int y) const{
     if(x>=width||x<0||y<0||y>=height)
@@ -71,13 +90,25 @@ void World::setData(int x,int y,const json11::Json& json){
         return ;
     grid_data[y*width+x] = json;
 }
+void World::createEntity(Entity * entity){
+    entities.push_back(entity);
+}
+const std::vector<Entity *> & World::getEntities() const{
+    return entities;
+}
 void World::save(std::string filename){
     std::ofstream world_file(filename);
-    json11::Json world_json=json11::Json::object{
+    std::vector<json11::Json> entities_json;
+    for(auto e:entities){
+        entities_json.push_back(EntityFactory::serializeJson(e));
+    }
+    
+    json11::Json world_json= json11::Json::object{
         {"width",width},
         {"height",height},
         {"grid",grid},
         {"data",grid_data},
+        {"entities",entities_json}
     };
     world_file << world_json.dump() <<std::endl;
     world_file.close();

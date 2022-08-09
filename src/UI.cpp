@@ -1,7 +1,9 @@
 #include "UI.hpp"
 #include <exception>
 #include <stdexcept>
+#include <utility>
 #include <SDL2/SDL_ttf.h>
+#include "UIText.hpp"
 
 UI::UI(){
     if(SDL_Init(SDL_INIT_EVERYTHING))
@@ -34,7 +36,21 @@ void UI::render(){
     }
     SDL_RenderPresent(renderer);
 }
+Uint32 update_cbk(Uint32 interval,void *){
+    
+    SDL_Event update_event;
+    update_event.type = SDL_USEREVENT;
+    update_event.user.type = SDL_USEREVENT;
+    update_event.user.code = 0;
+    SDL_PushEvent(&update_event);
+
+
+    return interval;
+}
 void UI::runEventLoop(){
+    auto fpsometer = new UIText("ttf/pixel.ttf",0,0,"FPS: 0");
+    addComponent(fpsometer);
+    updateTimerId = SDL_AddTimer(50,update_cbk,NULL);
     const Uint32 cap = 34;// milliseconds
     while(1){
         Uint64 start = SDL_GetPerformanceCounter();
@@ -48,6 +64,7 @@ void UI::runEventLoop(){
         render();
         Uint64 end = SDL_GetPerformanceCounter();
         Uint64 t = 1000*(end-start)/SDL_GetPerformanceFrequency();
+        if(start!=end)fpsometer->setText("FPS: "+std::to_string(std::min(SDL_GetPerformanceFrequency()/(end-start),1000ul/cap)));
         if(cap>t)SDL_Delay(cap-t);
     }
 }
@@ -55,6 +72,7 @@ UI::~UI(){
     for(auto c:components){
         delete c;
     }
+    SDL_RemoveTimer(updateTimerId);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();

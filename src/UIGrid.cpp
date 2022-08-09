@@ -17,8 +17,13 @@ void UIGrid::init(SDL_Renderer *renderer,EventManager &manager){
     for (auto tile:tiles){
         tile->loadTexture(renderer);
     }
+    for(auto entity:world->getEntities()){
+        entity->loadTexture(renderer);
+    }
+    this->renderer = renderer;
     manager.addEventHandler(SDL_KEYDOWN,{this,[](UIComponent *owner,const SDL_Event & ev){
         UIGrid *grid = (UIGrid *)owner;
+        EntityPlayer* player = (EntityPlayer *)grid->world->getEntities()[0];
         switch(ev.key.keysym.sym){
             case SDLK_s:
             grid->y+=16;
@@ -32,11 +37,26 @@ void UIGrid::init(SDL_Renderer *renderer,EventManager &manager){
             case SDLK_a:
             grid->x-=16;
             break;
+            case SDLK_UP:
+            player->move(0,-1);
+            break;
+            case SDLK_DOWN:
+            player->move(0,1);
+            break;
+            case SDLK_LEFT:
+            player->move(-1,0);
+            break;
+            case SDLK_RIGHT:
+            player->move(1,0);
+            break;    
             case SDLK_j:
             grid->world->save("world.json");
             break;
             case SDLK_l:
             grid->world->load("world.json");
+            for(auto e : grid->world->getEntities()){
+                e->loadTexture(grid->renderer);
+            }
             break;
 
 
@@ -68,6 +88,9 @@ void UIGrid::init(SDL_Renderer *renderer,EventManager &manager){
         }
     }});
 }
+World & UIGrid::getWorld(){
+    return *world;
+}
 SDL_Texture * UIGrid::render(SDL_Rect & rect,SDL_Renderer * renderer)  const {
     SDL_Rect viewport;
     SDL_RenderGetViewport(renderer,&viewport);
@@ -80,9 +103,13 @@ SDL_Texture * UIGrid::render(SDL_Rect & rect,SDL_Renderer * renderer)  const {
             SDL_Texture *texture = tile->getTexture(renderer,src,*world,i+x/World::tile_size,j+y/World::tile_size);
             SDL_Rect dst = {i*World::tile_size - x%World::tile_size,j*World::tile_size -y%World::tile_size,World::tile_size,World::tile_size};
             if (texture){
-                SDL_RenderCopy(renderer,texture,&src,&dst);
+                if(SDL_RenderCopy(renderer,texture,&src,&dst))
+                    throw std::runtime_error(SDL_GetError());
             }
         }
+    }
+    for(auto & e:world->getEntities()){
+        e->render(renderer,{x,y,viewport.w,viewport.h});
     }
     return NULL;
 }
