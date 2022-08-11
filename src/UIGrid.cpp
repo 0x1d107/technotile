@@ -5,7 +5,7 @@ UIGrid::UIGrid(World & world){
     this->world = &world;
 }
 
-void UIGrid::init(SDL_Renderer *renderer,EventManager &manager){
+void UIGrid::init(SDL_Renderer *renderer,EventManager &manager, UI&ui){
     auto tiles = world->getTiles();
     auto world_size = world->getSize();
     SDL_Rect viewport;
@@ -22,6 +22,8 @@ void UIGrid::init(SDL_Renderer *renderer,EventManager &manager){
     }
     this->renderer = renderer;
     manager.addEventHandler(SDL_KEYDOWN,{this,[](UIComponent *owner,const SDL_Event & ev){
+        if(SDL_IsTextInputActive())
+            return;
         UIGrid *grid = (UIGrid *)owner;
         EntityPlayer* player = (EntityPlayer *)grid->world->getEntities()[0];
         switch(ev.key.keysym.sym){
@@ -49,42 +51,7 @@ void UIGrid::init(SDL_Renderer *renderer,EventManager &manager){
             case SDLK_RIGHT:
             player->move(1,0);
             break;    
-            case SDLK_j:
-            grid->world->save("world.json");
-            break;
-            case SDLK_l:
-            grid->world->load("world.json");
-            for(auto e : grid->world->getEntities()){
-                e->loadTexture(grid->renderer);
-            }
-            break;
 
-
-        }
-    }});
-    manager.addEventHandler(SDL_MOUSEBUTTONDOWN,{this,[](UIComponent *owner,const SDL_Event & ev){
-        
-        UIGrid *grid = (UIGrid *)owner;
-        int px=(grid->x+ev.button.x)/World::tile_size; 
-        int py=(grid->y+ev.button.y)/World::tile_size; 
-        if(ev.button.button==SDL_BUTTON_LEFT){
-            grid->world->setTile(px,py,4);
-        }else if(ev.button.button==SDL_BUTTON_RIGHT){
-
-            grid->world->setTile(px,py,1);
-        }else if(ev.button.button == SDL_BUTTON_MIDDLE){
-            auto data_ptr = grid->world->getData(px,py);
-            if(!data_ptr)
-                return;
-            const json11::Json &data = *data_ptr;
-            if(data.is_object()){
-                auto data_obj=json11::Json::object (data.object_items());
-                if(data["variant"].is_number())
-                    data_obj["variant"] = (data["variant"].int_value()+1);
-                else
-                    data_obj["variant"] = 0;
-                grid->world->setData(px,py,data_obj);
-            }
         }
     }});
 }

@@ -24,7 +24,10 @@ json11::Json Tile::updateData(const World&world,int x, int y){
 }
 SDL_Texture *Tile::getTexture(SDL_Renderer *renderer,SDL_Rect &src,const World& world,int x, int y) const{
     
-    auto& data = *world.getData(x,y);
+    auto data_ptr =world.getData(x,y); 
+    if(!data_ptr)
+        return texture;
+    auto& data = *data_ptr;
     
     if(data.is_object()&&data["variant"].is_number()){
         //std::cout<<"texture "<<texture_path<<" size="<<surface->w<<"x"<<surface->h<<std::endl;

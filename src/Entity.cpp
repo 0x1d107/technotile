@@ -61,12 +61,23 @@ Entity::~Entity(){
 }
 
 /// EntityPlayer ///
-EntityPlayer::EntityPlayer(int x,int y,int health):Entity("tiles/spaceship.pbm",x,y){
+EntityPlayer::EntityPlayer(int x,int y,int health):Entity("tiles/rover.pbm",x,y){
     this->health = health;
 }
 void EntityPlayer::move(int dx,int dy){
     x+=dx;
     y+=dy;
+    int r= 0;
+    if(dy<0){
+        r= 0;
+    }else if(dy>0){
+        r=180;
+    }else if(dx<0){
+        r=270;
+    }else if(dx>0){
+        r=90;
+    }
+    rotation=r;
 }
 
 EntityPlayer::PlayerFactory EntityPlayer::factory;
@@ -81,6 +92,7 @@ json11::Json::object EntityPlayer::PlayerFactory::serialize(const Entity * entit
 }
 Entity * EntityPlayer::PlayerFactory::deserialize(const json11::Json &json){
     auto p = new EntityPlayer(json["x"].int_value(),json["y"].int_value(),json["hp"].int_value());
+    p->rotation = json["rotation"].int_value();
     p->data = json["data"];
     return p;
 }

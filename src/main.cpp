@@ -5,6 +5,8 @@
 #include "World.hpp"
 #include "Tile.hpp"
 #include "Entity.hpp"
+#include "UIBlockSelector.hpp"
+#include "UITextArea.hpp"
 #include <iostream>
 void init_entities(){
     EntityFactory::add(&EntityPlayer::factory);
@@ -15,7 +17,7 @@ int main(){
     //UIImage * kotik = new UIImage("kotik.bmp",100,100);
     World world(32,32); 
     int terrain = world.createTile(new Tile("tiles/terrain.pbm"));
-    int spaceship_id = world.createTile(new Tile("tiles/spaceship.pbm"));
+    int spaceship = world.createTile(new Tile("tiles/spaceship.pbm"));
     int rover = world.createTile(new Tile("tiles/rover.pbm"));
     int arrow = world.createTile(new Tile("tiles/arrow.pbm"));
     auto player = new EntityPlayer(15,15);
@@ -25,11 +27,13 @@ int main(){
         }
     }
     world.createEntity(player);
-    world.setTile(15,16,rover);
-    UIGrid* grid = new UIGrid(world);
+    world.setTile(15,16,spaceship);
+    world.setData(15,16,json11::Json::object{{"hp",100}});
+     UIGrid* grid = new UIGrid(world);
     ui.addComponent(grid);
     UIText *text = new UIText("ttf/pixel.ttf",0,16,"Tech demo 0.0.1",{0xff,0x00,0x00,0});
     ui.addComponent(text);
+    ui.addComponent(new UIBlockSelector(10,560,world,grid));
     /*
     ui.getManager().addEventHandler(SDL_USEREVENT,{grid,[](UIComponent *owner,const SDL_Event& event){
         if(event.user.code == 0){
@@ -38,6 +42,7 @@ int main(){
         }
     }});*/
     //ui.addComponent(kotik);
+   
     ui.runEventLoop();
     std::cout << SDL_GetError();
     return 0;

@@ -8,6 +8,8 @@ src = [
     'src/UIText.cpp',
     'src/UIGrid.cpp',
     'src/Tile.cpp',
+    'src/UIBlockSelector.cpp',
+    'src/UITextArea.cpp'
     
 ]
 src+= ['src/json11/json11.cpp']

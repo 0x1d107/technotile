@@ -12,7 +12,7 @@ UIImage::UIImage(const char *file,int x,int y){
     texture = NULL;
 }
 
-void UIImage::init(SDL_Renderer * renderer,EventManager & manager){
+void UIImage::init(SDL_Renderer * renderer,EventManager & manager,UI& ui){
     texture=SDL_CreateTextureFromSurface(renderer,surface);
     if(!texture)throw std::runtime_error(SDL_GetError());
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include <deque>
 #include <unordered_map>
+#include <functional>
 #include <SDL2/SDL.h>
 
 
@@ -17,9 +18,10 @@ class EventManager{
     void handleEvent(const SDL_Event & event);
 
 };
+class UI;
 class UIComponent{
     public:
-    virtual void init(SDL_Renderer *renderer,EventManager & manager){};
+    virtual void init(SDL_Renderer *renderer,EventManager & manager,UI& ui){};
     virtual SDL_Texture *render(SDL_Rect &rect,SDL_Renderer * renderer) const = 0;
     virtual bool isEnabled() const{
         return true;

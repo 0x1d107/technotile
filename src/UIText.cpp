@@ -16,7 +16,7 @@ UIText::UIText(const std::string &font_path, int x,int y,std::string text,SDL_Co
     
 }
 
-void UIText::init(SDL_Renderer * renderer,EventManager & manager){
+void UIText::init(SDL_Renderer * renderer,EventManager & manager,UI & ui){
     
     texture = SDL_CreateTextureFromSurface(renderer,surface);
     this->renderer = renderer;
@@ -31,6 +31,8 @@ std::pair<int,int> UIText::getSize()const{
 }
 void UIText::setText(const std::string &str){
     text = str;
+    if(!text.size())
+        return;
     SDL_FreeSurface(surface);
     SDL_DestroyTexture(texture);
     surface = TTF_RenderUTF8_Solid(font,text.c_str(),color);
@@ -39,6 +41,8 @@ void UIText::setText(const std::string &str){
     if(!texture) throw std::runtime_error(SDL_GetError());
 }
 SDL_Texture * UIText::render(SDL_Rect & rect,SDL_Renderer * renderer) const {
+    if(!text.size())
+        return NULL;
     rect.x=x;
     rect.y=y;
     rect.w=surface->w;

@@ -10,7 +10,7 @@ class UIGrid:public UIComponent{
     int y=0;
     UIGrid(World & world);
     World &getWorld();
-    virtual void init(SDL_Renderer *renderer, EventManager &manager);
+    virtual void init(SDL_Renderer *renderer, EventManager &manager,UI& ui);
     virtual SDL_Texture * render(SDL_Rect & rect,SDL_Renderer * renderer)  const override;
     virtual ~UIGrid(){}
 

@@ -13,7 +13,7 @@ UI::UI(){
 
 }
 void UI::addComponent(UIComponent *comp){
-    comp->init(renderer,event_manager);
+    comp->init(renderer,event_manager,*this);
     components.push_back(comp);
 }
 EventManager & UI::getManager(){
@@ -50,7 +50,7 @@ Uint32 update_cbk(Uint32 interval,void *){
 void UI::runEventLoop(){
     auto fpsometer = new UIText("ttf/pixel.ttf",0,0,"FPS: 0");
     addComponent(fpsometer);
-    updateTimerId = SDL_AddTimer(50,update_cbk,NULL);
+    updateTimerId = SDL_AddTimer(100,update_cbk,NULL);
     const Uint32 cap = 34;// milliseconds
     while(1){
         Uint64 start = SDL_GetPerformanceCounter();
@@ -82,12 +82,12 @@ void UI::getWindowSize(int &width,int  &height){
 }
 
 void EventManager::addEventHandler(SDL_EventType type, EventHandler handler){
-    events[type].push_back(handler);
+    events[type].push_front(handler);
 }
 
 void EventManager::handleEvent(const SDL_Event &event){
     for(const auto & handler : events[(SDL_EventType)event.type]){
-        if(!handler.owner->isEnabled())
+        if(handler.owner && !handler.owner->isEnabled())
             continue;
         handler.handler(handler.owner,event);
     }
