@@ -1,10 +1,10 @@
 #include "UIText.hpp"
 #include <stdexcept>
 #include <iostream>
-UIText::UIText(const std::string &font_path, int x,int y,std::string text,SDL_Color color ){
+UIText::UIText(const std::string &font_path, int x,int y,std::string text,SDL_Color color ,int size){
     if(TTF_Init())
         throw std::runtime_error(TTF_GetError());
-    font = TTF_OpenFont(font_path.c_str(),16);
+    font = TTF_OpenFont(font_path.c_str(),size);
     if(!font) throw std::runtime_error(SDL_GetError());
     this->x = x;
     this->y = y;

@@ -1,6 +1,6 @@
 #include "UITextArea.hpp"
 #include <iostream>
-UITextArea::UITextArea(const std::string &font_path, int x,int y,std::string text,std::function<void(const std::string &)> callback):UIText(font_path,x,y,text),on_input(callback){
+UITextArea::UITextArea(const std::string &font_path, int x,int y,std::string text,std::function<void(const std::string &)> callback):UIText(font_path,x,y,text,{255,255,255,0},24),on_input(callback){
     SDL_StopTextInput();
 }
 void UITextArea::init(SDL_Renderer * renderer,EventManager & manager,UI &ui){

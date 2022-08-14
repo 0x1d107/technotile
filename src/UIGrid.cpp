@@ -72,6 +72,7 @@ SDL_Texture * UIGrid::render(SDL_Rect & rect,SDL_Renderer * renderer)  const {
             if (texture){
                 if(SDL_RenderCopy(renderer,texture,&src,&dst))
                     throw std::runtime_error(SDL_GetError());
+                SDL_SetTextureColorMod(texture,0xff,0xff,0xff);
             }
         }
     }

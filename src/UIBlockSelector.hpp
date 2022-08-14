@@ -7,6 +7,7 @@ class UIBlockSelector:public UIComponent{
     World *world = NULL;
     UIGrid * grid = NULL;
     UITextArea * area = NULL;
+    UIText * output = NULL;
     int x;
     int y;
     int sel =0;

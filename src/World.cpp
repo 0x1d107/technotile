@@ -42,7 +42,12 @@ void World::load(std::string filename){
     }
     world_file.close();
 }
+void World::pause(){
+    paused = ! paused;
+}
 void World::update(){
+    if(paused)
+        return;
     std::vector<json11::Json> new_data(grid_data.size());
     for(int x=0;x<width;x++)
         for(int y=0;y<height;y++){

@@ -15,6 +15,7 @@ class World{
     std::vector<int> grid;
     std::vector<json11::Json> grid_data;
     std::vector<Entity *> entities;
+    bool paused = false;
     public:
     static const int tile_size = 32;
     World(int width, int height);
@@ -25,6 +26,7 @@ class World{
     void createEntity(Entity * entity);
     const std::vector<Entity *> & getEntities() const;
     void update();
+    void pause();
     void setTile(int x, int y, int tileId);
     const Tile * getTile(int x, int y) const;
     const json11::Json * getData(int x, int y) const;

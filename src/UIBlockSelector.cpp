@@ -14,16 +14,20 @@ UIGrid * UIBlockSelector::getGrid(){
 }
 
 void UIBlockSelector::init(SDL_Renderer *renderer,EventManager& manager,UI & ui){
-    area = new UITextArea("ttf/pixel.ttf",10, 544,":",[this,renderer](const std::string & str){
+    output = new UIText("ttf/con.ttf",10,524," ",{255,255,255,0},24);
+    area = new UITextArea("ttf/con.ttf",10, 542,":",[this,renderer](const std::string & str){
         std::cout<<"> "<<str<<std::endl;
         std::stringstream ss(str);
         std::string cmd;
         ss>>cmd;
+        this->output->setText(" ");
         if(cmd == "save"){
             std::string name = "world.json";
             if(!ss.eof())
                 ss>>name;
             this->world->save(name);
+            std::cout << "< saved "<< name<<std::endl;
+            this->output->setText("Saved");
         }else if(cmd == "load"){
             std::string name = "world.json";
             if(!ss.eof())
@@ -32,9 +36,30 @@ void UIBlockSelector::init(SDL_Renderer *renderer,EventManager& manager,UI & ui)
             for(auto e:this->world->getEntities()){
                 e->loadTexture(renderer);
             }
-
+            std::cout << "< loaded "<<name<<std::endl;
+            this->output->setText("Loaded");
+        }else if(cmd == "blockdata"){
+            int mx,my,bx,by;
+            SDL_GetMouseState(&mx,&my);
+            bx = (this->getGrid()->x+mx)/World::tile_size;
+            by = (this->getGrid()->y+my)/World::tile_size;
+            auto data = this->world->getData(bx,by);
+            if(!data){
+                this->output->setText("NULL");
+                std::cout << "< NULL data returned\n";
+            }else{
+                this->output->setText(data->dump());
+                std::cout <<"< "<<data->dump()<<std::endl;
+            }
+        }else if(cmd == "pause"||cmd  =="p"){
+            this->world->pause();
+        }else if(cmd == "update"){
+            this->world->pause();
+            this->world->update();
+            this->world->pause();
         }
     });
+    ui.addComponent(output);
     ui.addComponent(area);
     manager.addEventHandler(SDL_KEYDOWN,{this,[](UIComponent *owner,const SDL_Event & ev){
         if(SDL_IsTextInputActive()){

@@ -50,7 +50,7 @@ Uint32 update_cbk(Uint32 interval,void *){
 void UI::runEventLoop(){
     auto fpsometer = new UIText("ttf/pixel.ttf",0,0,"FPS: 0");
     addComponent(fpsometer);
-    updateTimerId = SDL_AddTimer(100,update_cbk,NULL);
+    updateTimerId = SDL_AddTimer(500,update_cbk,NULL);
     const Uint32 cap = 34;// milliseconds
     while(1){
         Uint64 start = SDL_GetPerformanceCounter();

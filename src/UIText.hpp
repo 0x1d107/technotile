@@ -15,7 +15,7 @@ class UIText:public UIComponent{
     int x;
     int y;
     public:
-    UIText(const std::string &font_path, int x,int y,std::string text,SDL_Color color= {0xff,0xff,0xff,0});
+    UIText(const std::string &font_path, int x,int y,std::string text,SDL_Color color= {0xff,0xff,0xff,0},int size = 16);
     virtual void init(SDL_Renderer * renderer,EventManager & manager,UI & ui)override;
     const std::string & getText() const;
     std::pair<int,int> getSize() const;
